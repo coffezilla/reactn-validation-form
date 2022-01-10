@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { formStyles, formStylesColors } from './FormInputsTheme.js';
 
 /*
 Form input options
@@ -33,8 +34,8 @@ FileInputGroup: input file to access Gallery / Camera
 // 	const { inputLabel, value } = props;
 // 	return (
 // 		<View>
-// 			{inputLabel && <Text style={customStyles.label}>{inputLabel}</Text>}
-// 			<Text style={[customStyles.inputTextRead, style]} {...props}>
+// 			{inputLabel && <Text style={customformStyles.label}>{inputLabel}</Text>}
+// 			<Text style={[customformStyles.inputTextRead, style]} {...props}>
 // 				{value}
 // 			</Text>
 // 		</View>
@@ -48,12 +49,23 @@ export const TextareaInputGroup = ({
 	name,
 	error,
 	handleInputForm,
+	darkTheme = false,
+	params = {},
 	...props
 }) => {
 	return (
 		<View>
 			{label && (
-				<Text style={styles.labelTop}>
+				<Text
+					style={[
+						formStyles.labelTop,
+						{
+							color: darkTheme
+								? formStylesColors.dark.text
+								: formStylesColors.default.text,
+						},
+					]}
+				>
 					{label}{' '}
 					{error && (
 						<Text style={{ color: 'red', fontWeight: 'normal' }}>{error}</Text>
@@ -61,9 +73,29 @@ export const TextareaInputGroup = ({
 				</Text>
 			)}
 			<TextInput
-				style={[styles.textareaInput, style, error && styles.inputTextError]}
+				style={[
+					formStyles.textareaInput,
+					style,
+					{
+						backgroundColor: darkTheme
+							? formStylesColors.dark.backgroundInput
+							: formStylesColors.default.backgroundInput,
+						color: darkTheme
+							? formStylesColors.dark.text
+							: formStylesColors.default.text,
+						borderColor: darkTheme
+							? formStylesColors.dark.textInputBorder
+							: formStylesColors.default.textInputBorder,
+					},
+					error && formStyles.inputTextError,
+				]}
 				{...props}
-				onChangeText={(value) => handleInputForm(value, name)}
+				placeholderTextColor={
+					darkTheme
+						? formStylesColors.dark.placeholder
+						: formStylesColors.default.placeholder
+				}
+				onChangeText={(value) => handleInputForm(value, name, params)}
 			/>
 		</View>
 	);
@@ -76,12 +108,41 @@ export const TextInputGroupReadonly = ({
 	name,
 	value,
 	error,
+	darkTheme = false,
+	params = {},
 	...props
 }) => {
 	return (
 		<View>
-			{label && <Text style={styles.labelTop}>{label}</Text>}
-			<Text style={[styles.inputTextReadOnly, style]} {...props}>
+			{label && (
+				<Text
+					style={[
+						formStyles.labelTop,
+						{
+							color: darkTheme
+								? formStylesColors.dark.text
+								: formStylesColors.default.text,
+						},
+					]}
+				>
+					{label}
+				</Text>
+			)}
+			<Text
+				style={[
+					formStyles.inputTextReadOnly,
+					style,
+					{
+						backgroundColor: darkTheme
+							? formStylesColors.dark.backgroundWrap
+							: formStylesColors.default.backgroundWrap,
+						color: darkTheme
+							? formStylesColors.dark.text
+							: formStylesColors.default.text,
+					},
+				]}
+				{...props}
+			>
 				{value}
 			</Text>
 		</View>
@@ -95,9 +156,11 @@ export const TextInputGroup = ({
 	name,
 	error,
 	handleInputForm,
+	darkTheme = false,
+	params = {},
 	...props
 }) => {
-	const handleMaskText = (value, name) => {
+	const handleMaskText = (value, name, params = {}) => {
 		let currentVal = value;
 
 		if (mask === 'NUMBER') {
@@ -125,17 +188,25 @@ export const TextInputGroup = ({
 			currentVal = currentVal.replace(/\D/g, ''); //Remove tudo o que não é dígito
 			currentVal = currentVal.replace(/(\d{3})(\d)/, '$1.$2'); //Coloca um ponto entre o terceiro e o quarto dígitos
 			currentVal = currentVal.replace(/(\d{3})(\d)/, '$1.$2'); //Coloca um ponto entre o terceiro e o quarto dígitos
-			//de novo (para o segundo bloco de números)
 			currentVal = currentVal.replace(/(\d{3})(\d{1,2})$/, '$1-$2'); //Coloca um hífen entre o terceiro e o quarto dígitos
 		}
 
-		handleInputForm(currentVal, name);
+		handleInputForm(currentVal, name, params);
 	};
 
 	return (
 		<View>
 			{label && (
-				<Text style={styles.labelTop}>
+				<Text
+					style={[
+						formStyles.labelTop,
+						{
+							color: darkTheme
+								? formStylesColors.dark.text
+								: formStylesColors.default.text,
+						},
+					]}
+				>
 					{label}{' '}
 					{error && (
 						<Text style={{ color: 'red', fontWeight: 'normal' }}>{error}</Text>
@@ -143,10 +214,32 @@ export const TextInputGroup = ({
 				</Text>
 			)}
 			<TextInput
-				style={[styles.inputText, style, error && styles.inputTextError]}
+				style={[
+					formStyles.inputText,
+					style,
+					{
+						backgroundColor: darkTheme
+							? formStylesColors.dark.backgroundInput
+							: formStylesColors.default.backgroundInput,
+						color: darkTheme
+							? formStylesColors.dark.text
+							: formStylesColors.default.text,
+						borderColor: darkTheme
+							? formStylesColors.dark.textInputBorder
+							: formStylesColors.default.textInputBorder,
+					},
+					error && formStyles.inputTextError,
+				]}
 				{...props}
+				placeholderTextColor={
+					darkTheme
+						? formStylesColors.dark.placeholder
+						: formStylesColors.default.placeholder
+				}
 				onChangeText={(value) =>
-					mask ? handleMaskText(value, name) : handleInputForm(value, name)
+					mask
+						? handleMaskText(value, name, params)
+						: handleInputForm(value, name, params)
 				}
 			/>
 		</View>
@@ -160,10 +253,21 @@ export const SwitchInputGroup = ({
 	value,
 	error,
 	handleInputForm,
+	darkTheme = false,
+	params = {},
 }) => {
 	return (
 		<>
-			<Text style={styles.labelTop}>
+			<Text
+				style={[
+					formStyles.labelTop,
+					{
+						color: darkTheme
+							? formStylesColors.dark.text
+							: formStylesColors.default.text,
+					},
+				]}
+			>
 				<>
 					{labelHeader}{' '}
 					{error && (
@@ -171,13 +275,54 @@ export const SwitchInputGroup = ({
 					)}
 				</>
 			</Text>
-			<View style={[styles.SwitchInputGroup, error && styles.inputTextError]}>
-				<Text style={styles.inlineLabel}>{label}</Text>
+
+			<View
+				style={[
+					formStyles.SwitchInputGroup,
+					{
+						backgroundColor: darkTheme
+							? formStylesColors.dark.backgroundWrap
+							: formStylesColors.default.backgroundWrap,
+					},
+					error && formStyles.inputTextError,
+				]}
+			>
+				<Text
+					style={[
+						formStyles.inlineLabel,
+						{
+							color: darkTheme
+								? formStylesColors.dark.text
+								: formStylesColors.default.text,
+						},
+					]}
+				>
+					{label}
+				</Text>
 				<Switch
-					trackColor={{ false: '#cdcdcd', true: '#6edc5f' }}
-					thumbColor={value ? '#fff' : '#fff'}
-					ios_backgroundColor='#cdcdcd'
-					onValueChange={() => handleInputForm(value, name, true)}
+					trackColor={{
+						false: darkTheme
+							? formStylesColors.dark.trackColorFalse
+							: formStylesColors.default.trackColorFalse,
+						true: darkTheme
+							? formStylesColors.dark.trackColorTrue
+							: formStylesColors.default.trackColorTrue,
+					}}
+					thumbColor={
+						value
+							? darkTheme
+								? formStylesColors.dark.trackThumbColor
+								: formStylesColors.default.trackThumbColor
+							: darkTheme
+							? formStylesColors.dark.trackThumbColor
+							: formStylesColors.default.trackThumbColor
+					}
+					ios_backgroundColor={
+						darkTheme
+							? formStylesColors.dark.trackTBgIos
+							: formStylesColors.default.trackTBgIos
+					}
+					onValueChange={() => handleInputForm(value, name, params, true)}
 					value={value}
 				/>
 			</View>
@@ -192,10 +337,21 @@ export const CheckInputGroup = ({
 	value,
 	error,
 	handleInputForm,
+	darkTheme = false,
+	params = {},
 }) => {
 	return (
 		<>
-			<Text style={styles.labelTop}>
+			<Text
+				style={[
+					formStyles.labelTop,
+					{
+						color: darkTheme
+							? formStylesColors.dark.text
+							: formStylesColors.default.text,
+					},
+				]}
+			>
 				{labelHeader}{' '}
 				{error && (
 					<Text style={{ color: 'red', fontWeight: 'normal' }}>{error}</Text>
@@ -203,18 +359,38 @@ export const CheckInputGroup = ({
 			</Text>
 
 			<View
-				style={[styles.checkInputGroupWrap, error && styles.inputTextError]}
+				style={[
+					formStyles.checkInputGroupWrap,
+					{
+						backgroundColor: darkTheme
+							? formStylesColors.dark.backgroundWrap
+							: formStylesColors.default.backgroundWrap,
+					},
+					error && formStyles.inputTextError,
+				]}
 			>
 				<Pressable
-					onPress={() => handleInputForm(value, name, true)}
-					style={styles.checkInputGroupTouchable}
+					onPress={() => handleInputForm(value, name, params, true)}
+					style={formStyles.checkInputGroupTouchable}
 				>
 					<CheckInput
 						value={value}
 						style={{ marginRight: 10 }}
-						onPress={() => handleInputForm(value, name, true)}
+						darkTheme={darkTheme}
+						onPress={() => handleInputForm(value, name, params, true)}
 					/>
-					<Text style={styles.inlineLabel}>{label}</Text>
+					<Text
+						style={[
+							formStyles.inlineLabel,
+							{
+								color: darkTheme
+									? formStylesColors.dark.text
+									: formStylesColors.default.text,
+							},
+						]}
+					>
+						{label}
+					</Text>
 				</Pressable>
 			</View>
 		</>
@@ -222,10 +398,24 @@ export const CheckInputGroup = ({
 };
 
 // group all radios
-export const RadioInputGroupWrapper = ({ label, error, children }) => {
+export const RadioInputGroupWrapper = ({
+	label,
+	error,
+	children,
+	darkTheme = false,
+}) => {
 	return (
 		<View>
-			<Text style={styles.labelTop}>
+			<Text
+				style={[
+					formStyles.labelTop,
+					{
+						color: darkTheme
+							? formStylesColors.dark.text
+							: formStylesColors.default.text,
+					},
+				]}
+			>
 				<>
 					{label}{' '}
 					{error && (
@@ -245,39 +435,83 @@ export const RadioInputGroup = ({
 	group,
 	error,
 	handleInputForm,
+	darkTheme = false,
+	params = {},
+	style,
 }) => {
 	return (
 		<>
 			<View
-				style={[styles.checkInputGroupWrap, error && styles.inputTextError]}
+				style={[
+					formStyles.checkInputGroupWrap,
+					{
+						backgroundColor: darkTheme
+							? formStylesColors.dark.backgroundWrap
+							: formStylesColors.default.backgroundWrap,
+					},
+					style,
+					error && formStyles.inputTextError,
+				]}
 			>
 				<Pressable
-					onPress={() => handleInputForm(name, group)}
-					style={styles.checkInputGroupTouchable}
+					onPress={() => handleInputForm(name, group, params)}
+					style={[formStyles.checkInputGroupTouchable]}
 				>
 					<RadioInput
 						value={value}
 						name={name}
+						darkTheme={darkTheme}
 						style={{ marginRight: 7 }}
-						onPress={() => handleInputForm(name, group)}
+						onPress={() => handleInputForm(name, group, params)}
 					/>
 
-					<Text style={styles.inlineLabel}>{label}</Text>
+					<Text
+						style={[
+							formStyles.inlineLabel,
+							{
+								color: darkTheme
+									? formStylesColors.dark.text
+									: formStylesColors.default.text,
+							},
+						]}
+					>
+						{label}
+					</Text>
 				</Pressable>
 			</View>
 		</>
 	);
 };
 
-export const RadioInput = ({ value, name, style, onPress, ...props }) => {
+export const RadioInput = ({
+	value,
+	name,
+	style,
+	onPress,
+	darkTheme = false,
+	...props
+}) => {
 	return (
 		<Pressable onPress={onPress}>
 			<View
 				style={[
-					styles.checkboxIconWrap,
+					formStyles.checkboxIconWrap,
 					{
-						borderColor: value === name ? '#6E00F0' : '#6E00F0',
-						backgroundColor: value === name ? 'white' : 'white',
+						borderColor: value
+							? darkTheme
+								? formStylesColors.dark.radioPrimaryTrue
+								: formStylesColors.default.radioPrimaryTrue
+							: darkTheme
+							? formStylesColors.dark.radioPrimaryFalse
+							: formStylesColors.default.radioPrimaryFalse,
+
+						backgroundColor: value
+							? darkTheme
+								? formStylesColors.dark.radioPrimaryBgTrue
+								: formStylesColors.default.radioPrimaryBgTrue
+							: darkTheme
+							? formStylesColors.dark.radioPrimaryBgFalse
+							: formStylesColors.default.radioPrimaryBgFalse,
 					},
 					style,
 				]}
@@ -287,7 +521,14 @@ export const RadioInput = ({ value, name, style, onPress, ...props }) => {
 					<Ionicons
 						name='ellipse'
 						type='Ionicons'
-						style={styles.radioboxIcon}
+						style={[
+							formStyles.radioboxIcon,
+							{
+								color: darkTheme
+									? formStylesColors.dark.radioIconTrue
+									: formStylesColors.default.radioIconTrue,
+							},
+						]}
 					/>
 				)}
 			</View>
@@ -295,16 +536,36 @@ export const RadioInput = ({ value, name, style, onPress, ...props }) => {
 	);
 };
 
-export const CheckInput = ({ value, name, style, onPress, ...props }) => {
+export const CheckInput = ({
+	value,
+	name,
+	style,
+	onPress,
+	darkTheme = true,
+	...props
+}) => {
 	return (
 		<Pressable onPress={onPress}>
 			<View
 				style={[
-					styles.radioboxIconWrap,
+					formStyles.radioboxIconWrap,
 					{
 						borderWidth: value ? 0 : 2,
-						borderColor: value ? '#5905BC' : '#6E00F0',
-						backgroundColor: value ? '#6E00F0' : 'white',
+						borderColor: value
+							? darkTheme
+								? formStylesColors.dark.checkPrimaryTrue
+								: formStylesColors.default.checkPrimaryTrue
+							: darkTheme
+							? formStylesColors.dark.checkPrimaryFalse
+							: formStylesColors.default.checkPrimaryFalse,
+
+						backgroundColor: value
+							? darkTheme
+								? formStylesColors.dark.checkPrimaryBgTrue
+								: formStylesColors.default.checkPrimaryBgTrue
+							: darkTheme
+							? formStylesColors.dark.checkPrimaryBgFalse
+							: formStylesColors.default.checkPrimaryBgFalse,
 					},
 					style,
 				]}
@@ -314,118 +575,17 @@ export const CheckInput = ({ value, name, style, onPress, ...props }) => {
 					<Ionicons
 						name='checkmark'
 						type='Ionicons'
-						style={styles.checkboxIcon}
+						style={[
+							formStyles.checkboxIcon,
+							{
+								color: darkTheme
+									? formStylesColors.dark.checkIconTrue
+									: formStylesColors.default.checkIconTrue,
+							},
+						]}
 					/>
 				)}
 			</View>
 		</Pressable>
 	);
 };
-
-const styles = StyleSheet.create({
-	// basic icon check
-	checkboxIcon: {
-		borderWidth: 0,
-		lineHeight: 19,
-		color: 'white',
-		fontSize: 17,
-		textAlign: 'center',
-	},
-	checkboxIconWrap: {
-		width: 20,
-		height: 20,
-		borderRadius: 22,
-		borderWidth: 2,
-	},
-	// basic icon radio
-	radioboxIcon: {
-		borderWidth: 0,
-		paddingLeft: 1, // hack
-		lineHeight: 16,
-		color: '#6E00F0',
-		fontSize: 13,
-		textAlign: 'center',
-	},
-	radioboxIconWrap: {
-		width: 20,
-		height: 20,
-		borderRadius: 3,
-	},
-	// label
-	inlineLabel: {
-		fontSize: 16,
-		marginLeft: 7,
-		color: 'black',
-	},
-	labelTop: {
-		fontWeight: 'bold',
-		marginBottom: 5,
-		color: 'black',
-	},
-	// checkbox group
-	checkInputGroupWrap: {
-		backgroundColor: '#eee',
-		borderRadius: 8,
-		justifyContent: 'flex-start',
-		flexDirection: 'row',
-		alignItems: 'center',
-		overflow: 'hidden',
-	},
-	checkInputGroupTouchable: {
-		paddingHorizontal: 15,
-		height: 45,
-		justifyContent: 'flex-start',
-		flexDirection: 'row',
-		alignItems: 'center',
-	},
-	// switch group
-	SwitchInputGroup: {
-		backgroundColor: '#eee',
-		borderRadius: 8,
-		paddingHorizontal: 10,
-		height: 45,
-		justifyContent: 'flex-start',
-		flexDirection: 'row',
-		alignItems: 'center',
-		justifyContent: 'space-between',
-	},
-	// input text
-	inputText: {
-		borderColor: '#D1D1D1',
-		borderWidth: 1,
-		borderRadius: 8,
-		paddingHorizontal: 15,
-		fontSize: 18,
-		height: 45,
-		marginBottom: 15,
-	},
-	inputTextReadOnly: {
-		backgroundColor: '#F5F5F5',
-		lineHeight: 45,
-		borderRadius: 8,
-		overflow: 'hidden',
-		paddingHorizontal: 15,
-		fontSize: 18,
-		height: 45,
-		marginBottom: 15,
-	},
-	textareaInput: {
-		borderColor: '#D1D1D1',
-		alignItems: 'flex-start',
-		borderWidth: 1,
-		borderRadius: 8,
-		paddingHorizontal: 15,
-		fontSize: 18,
-		minHeight: 80,
-		maxHeight: 200,
-		marginBottom: 15,
-		paddingTop: 10,
-		paddingBottom: 8,
-		textAlignVertical: 'top', // hack Android
-	},
-	// error
-	inputTextError: {
-		borderWidth: 1,
-		borderColor: 'red',
-	},
-});
